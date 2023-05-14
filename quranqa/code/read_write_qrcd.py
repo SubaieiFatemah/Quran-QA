@@ -31,12 +31,12 @@ def dump_jsonl(data, output_path, append=False):
 class Answer():
     def __init__(self, dictionary) -> None:
         self.text = dictionary["text"]
-        self.start_char = dictionary.get("start_char", None)  # Use .get() to handle missing key gracefully
+        self.answer_start = dictionary.get("answer_start", None)  # Use .get() to handle missing key gracefully
 
     def to_dict(self) -> dict:
         answer_dict = {
             "text": self.text,
-            "start_char": self.start_char
+            "answer_start": self.answer_start
         }
         return answer_dict
 
