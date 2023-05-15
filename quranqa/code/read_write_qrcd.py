@@ -31,39 +31,28 @@ def dump_jsonl(data, output_path, append=False):
 class Answer():
     def __init__(self, dictionary) -> None:
         self.text = dictionary["text"]
-        self.answer_start = dictionary.get("answer_start", None)  # Use .get() to handle missing key gracefully
+        self.start_char = dictionary.get("answer_start", None)  # Use .get() to handle missing key gracefully
 
     def to_dict(self) -> dict:
         answer_dict = {
             "text": self.text,
-            "answer_start": self.answer_start
+            "answer_start": self.start_char
         }
         return answer_dict
 
 class PassageQuestion():
-    def __init__(self,dictionary) -> None:
-        self.pq_id = None
-        self.passage = None
-        #self.surah = None
-        #self.verses = None
-        self.question = None
-        self.answers = []
+    def __init__(self, dictionary) -> None:
         self.pq_id = dictionary["pq_id"]
         self.passage = dictionary["passage"]
-        #self.surah = dictionary["surah"]
-        #self.verses = dictionary["verses"]
         self.question = dictionary["question"]
-        for answer in dictionary["answers"]:
-            self.answers.append(Answer(answer))
+        self.answers = [Answer({"text": dictionary["text"], "answer_start": dictionary["start_char"]})]
 
     def to_dict(self) -> dict:
         passge_question_dict = {
-        "pq_id":self.pq_id,
-        "passage":self.passage,
-        #"surah":self.surah,
-        #"verses":self.verses,
-        "question":self.question,
-        "answers":[x.to_dict() for x in self.answers]
+            "pq_id": self.pq_id,
+            "passage": self.passage,
+            "question": self.question,
+            "answers": [answer.to_dict() for answer in self.answers]
         }
         return passge_question_dict
 
