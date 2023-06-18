@@ -40,21 +40,22 @@ class Answer():
         }
         return answer_dict
 
-class PassageQuestion():
-    def __init__(self, dictionary) -> None:
+class PassageQuestion:
+    def __init__(self, dictionary):
         self.pq_id = dictionary["pq_id"]
         self.passage = dictionary["passage"]
         self.question = dictionary["question"]
-        self.answers = [Answer({"text": dictionary["text"], "answer_start": dictionary["start_char"]})]
+        answer = dictionary["answers"][0]
+        self.answers = [Answer({"text": answer["text"], "answer_start": answer["start_char"]})]
 
-    def to_dict(self) -> dict:
-        passge_question_dict = {
+    def to_dict(self):
+        passage_question_dict = {
             "pq_id": self.pq_id,
             "passage": self.passage,
             "question": self.question,
-            "answers": [answer.to_dict() for answer in self.answers]
+            "answers": self.answers[0].to_dict()
         }
-        return passge_question_dict
+        return passage_question_dict
 
 def read_JSONL_file(file_path) -> list:
     data_in_file = load_jsonl(file_path)
@@ -86,5 +87,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     passage_question_objects = read_JSONL_file(args.input_file)
     write_to_JSONL_file(passage_question_objects,args.output_file)
-
-    
