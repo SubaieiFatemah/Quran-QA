@@ -45,15 +45,23 @@ class PassageQuestion:
         self.pq_id = dictionary["pq_id"]
         self.passage = dictionary["passage"]
         self.question = dictionary["question"]
-        answer = dictionary["answers"][0]
-        self.answers = [Answer({"text": answer["text"], "answer_start": answer["start_char"]})]
+        try:
+            answers_dict = dictionary["answers"]
+            self.answer_start = answers_dict.get("start_char")
+            print("start char is:", self.answer_start)
+            self.answers = answers_dict.get("text")
+        except KeyError:
+            print("KeyError occurred for dictionary:")
+            print(dictionary)
+            raise
 
     def to_dict(self):
         passage_question_dict = {
             "pq_id": self.pq_id,
             "passage": self.passage,
             "question": self.question,
-            "answers": self.answers[0].to_dict()
+            "answer_start": self.answer_start,
+            "answers": self.answers
         }
         return passage_question_dict
 
