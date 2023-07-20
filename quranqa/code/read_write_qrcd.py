@@ -31,37 +31,33 @@ def dump_jsonl(data, output_path, append=False):
 class Answer():
     def __init__(self, dictionary) -> None:
         self.text = dictionary["text"]
-        self.start_char = dictionary.get("answer_start", None)  # Use .get() to handle missing key gracefully
+        self.start_char = dictionary["start_char"]       
 
     def to_dict(self) -> dict:
         answer_dict = {
             "text": self.text,
-            "answer_start": self.start_char
+            "start_char":self.start_char
         }
         return answer_dict
 
 class PassageQuestion:
     def __init__(self, dictionary):
+        self.pq_id = None
+        self.passage = None
+        self.question = None
+        self.answers = []
         self.pq_id = dictionary["pq_id"]
         self.passage = dictionary["passage"]
         self.question = dictionary["question"]
-        try:
-            answers_dict = dictionary["answers"]
-            self.answer_start = answers_dict.get("start_char")
-            print("start char is:", self.answer_start)
-            self.answers = answers_dict.get("text")
-        except KeyError:
-            print("KeyError occurred for dictionary:")
-            print(dictionary)
-            raise
+        for answer in dictionary["answers"]:
+            self.answers.append(Answer(answer))
 
     def to_dict(self):
         passage_question_dict = {
             "pq_id": self.pq_id,
             "passage": self.passage,
             "question": self.question,
-            "answer_start": self.answer_start,
-            "answers": self.answers
+            "answers":[x.to_dict() for x in self.answers]
         }
         return passage_question_dict
 
